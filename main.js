@@ -1,63 +1,61 @@
 import './style.css'
+import { getItems } from "./items.js";
 
-const items = [
-  {
-      id: 1,
-      name: 'Fromage',
-      price: 5,
-      imageUrl: "https://upload.wikimedia.org/wikipedia/commons/5/50/Ch%C3%A8vres_cendr%C3%A9s.jpg"
-  },
-  {
-      id: 2,
-      name: 'Pain',
-      price: 2,
-      imageUrl: "https://upload.wikimedia.org/wikipedia/commons/f/f5/Baguettes_-_stonesoup.jpg"
-  },
-  {
-      id: 3,
-      name: 'Vin',
-      price: 10,
-      imageUrl: "https://upload.wikimedia.org/wikipedia/commons/1/11/Vin_bourru_Savoie.jpg"
-  },
-  {
-      id: 4,
-      name: 'Jambon',
-      price: 8,
-      imageUrl: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Jambon_blanc_de_Paris.png"
-  },
-  {
-      id: 5,
-      name: 'Pommes',
-      price: 3,
-      imageUrl: "https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg"
-  },
-  {
-      id: 6,
-      name: 'Poisson',
-      price: 12,
-      imageUrl: "https://upload.wikimedia.org/wikipedia/commons/9/9f/Fishfinger_classic_frozen_1.jpg"
-  },
-  {
-      id: 7,
-      name: 'Poulet',
-      price: 7,
-      imageUrl: "https://upload.wikimedia.org/wikipedia/commons/d/d9/Max%27s_Roasted_Chicken_-_Evan_Swigart.jpg"
-  },
-  {
-      id: 8,
-      name: 'Salade',
-      price: 4,
-      imageUrl: "https://upload.wikimedia.org/wikipedia/commons/9/94/Salad_platter.jpg"
-  },
-  {
-      id: 9,
-      name: 'Pâtes',
-      price: 6,
-      imageUrl: "https://upload.wikimedia.org/wikipedia/commons/4/41/Maccaronara_01.jpg"
-  },
-];
+const availableItems = document.querySelector('#available-items');
+const cart = document.querySelector('#cartList');
+const cartItems = [];
 
+getItems().then((data)=>{
+  console.log(data);
+  for(let item of data){
+    console.log(item);
+    const li = document.createElement('li');
+    //const h3 = document.createElement('h3');
+    //const img = document.createElement('img');
+    //img.setAttribute("src", item.imageUrl); 
+    //img.src = item.imageUrl;
+    //h3.textContent = item.name;
+    li.classList.add('item');
+    //li.appendChild(h3);
+    //li.appendChild(img);
+    //availableItems.appendChild(li);
+    li.innerHTML = `
+      <img src="${item.imageUrl}" alt="${item.name}"/>
+      <h3>${item.name}</h3>
+      <p>${item.price} €</p>
+      <button>Ajouter au panier</button>
+    `;
+    availableItems.appendChild(li);
+    const button = li.querySelector('button');
+    button.addEventListener('click', ()=> {
+      if (cartItems.find((currentItem)=>{
+        return currentItem.id === item.id
+      })){
+        const index = cartItems.findIndex(currentItem => currentItem.id === item.id);
+        cartItems[index].quantity += 1;
+      } else {
+        const itemWithIteration = item;
+        item.quantity = 1;
+        cartItems.push(itemWithIteration);
+      }
 
-export const getItems = () => {
-  return Promise.resolve(items);
-}
+      let tmp = "";
+      for (let article of cartItems){
+        let html = `
+        <li class="cart-item">
+        <h3>${article.name}</h3>
+        <p>${article.price} €</p>
+        <button >Retirer du panier</button>
+        <button >-</button>
+        <p>Quantity : ${article.quantity}</p>
+        <button >+</button>
+        </li>
+        `
+        tmp+=html;
+      }
+      cart.innerHTML = tmp;
+    })
+
+  }
+  
+})
