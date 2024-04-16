@@ -5,10 +5,12 @@ const availableItems = document.querySelector('#available-items');
 const cart = document.querySelector('#cartList');
 const cartItems = [];
 
+const coucou = ()=> {
+  console.log("coucou");
+}
+
 getItems().then((data)=>{
-  console.log(data);
   for(let item of data){
-    console.log(item);
     const li = document.createElement('li');
     //const h3 = document.createElement('h3');
     //const img = document.createElement('img');
@@ -45,15 +47,23 @@ getItems().then((data)=>{
         <li class="cart-item">
         <h3>${article.name}</h3>
         <p>${article.price} €</p>
-        <button >Retirer du panier</button>
-        <button >-</button>
+        <button id="remove${article.id}">Retirer du panier</button>
+        <button id="minus${article.id}">-</button>
         <p>Quantity : ${article.quantity}</p>
-        <button >+</button>
+        <button data-remove="${article.id}">+</button>
         </li>
         `
         tmp+=html;
+        
       }
+      
       cart.innerHTML = tmp;
+
+      const removeButtons = document.querySelectorAll('button[data-remove]');
+      for (let i = 0; i < removeButtons.length; i++) {
+        
+      }
+
     })
 
   }
