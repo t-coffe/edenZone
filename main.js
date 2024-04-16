@@ -61,7 +61,33 @@ getItems().then((data)=>{
 
       const removeButtons = document.querySelectorAll('button[data-remove]');
       for (let i = 0; i < removeButtons.length; i++) {
-        
+        const btn = removeButtons[i];
+        btn.addEventListener('click', ()=> {
+          const id = parseInt(btn.getAttribute("data-remove"));
+          console.log(id);
+          const index = cartItems.findIndex((currentArticle)=> {
+            return currentArticle.id === id;
+          })
+          cartItems[index].quantity += 1;
+
+          let tmp = "";
+          for (let article of cartItems){
+            let html = `
+            <li class="cart-item">
+            <h3>${article.name}</h3>
+            <p>${article.price} €</p>
+            <button id="remove${article.id}">Retirer du panier</button>
+            <button id="minus${article.id}">-</button>
+            <p>Quantity : ${article.quantity}</p>
+            <button data-remove="${article.id}">+</button>
+            </li>
+            `
+            tmp+=html;
+            
+          }
+      
+      cart.innerHTML = tmp;
+        })
       }
 
     })
